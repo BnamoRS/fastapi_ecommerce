@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, Boolean, func
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
+                        func)
 from sqlalchemy.orm import relationship
 
 from app.backend.db import Base
@@ -16,4 +17,4 @@ class Review(Base):
     is_active = Column(Boolean, default=True)
 
     product = relationship('Product', back_populates='reviews', uselist=False)
-    user = relationship('User', back_populates='reviews', uselist=True)
+    user = relationship('User', back_populates='reviews', uselist=False)

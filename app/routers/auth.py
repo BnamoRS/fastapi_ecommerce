@@ -1,17 +1,18 @@
-from datetime import datetime, timedelta,timezone
-
-from fastapi import APIRouter, Depends, status, HTTPException
-from fastapi.security import HTTPBasic, HTTPBasicCredentials, OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from sqlalchemy import select, insert
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
-from sqlalchemy.ext.asyncio import AsyncSession
-from passlib.context import CryptContext
-from sqlalchemy.util import deprecated
-import jwt
 
+import jwt
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import (HTTPBasic, HTTPBasicCredentials,
+                              OAuth2PasswordBearer, OAuth2PasswordRequestForm)
+from passlib.context import CryptContext
+from sqlalchemy import insert, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.util import deprecated
+
+from app.backend.db_depends import get_db
 from app.models.user import User
 from app.schemas import CreateUser
-from app.backend.db_depends import get_db
 
 SECRET_KEY = 'dad47613223298ae5801b72045ab46aa2b69838e5047f58d7b56566e246626a4'
 ALGORITHM = 'HS256'
@@ -49,7 +50,7 @@ async def create_access_token(username: str, user_id: int, is_admin: bool, is_su
     }
     # Преобразование datetime в timestamp (колличество секунд с начала эпохи)
     payload['exp'] = int(payload['exp'].timestamp())
-    return jwt.encode(payload, SECRET_KEY,algorithm=ALGORITHM)
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):

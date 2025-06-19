@@ -1,18 +1,19 @@
-"""Добавил модель Review
+"""изменил связь user-review в моделях
 
-Revision ID: fab3795bbe8c
-Revises: bd21e8a3ba7f
-Create Date: 2025-05-30 23:07:53.560708
+Revision ID: 15672fdcf622
+Revises: ec7329f4a25d
+Create Date: 2025-06-19 17:44:00.678155
 
 """
 from typing import Sequence, Union
 
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision: str = 'fab3795bbe8c'
-down_revision: Union[str, None] = 'bd21e8a3ba7f'
+revision: str = '15672fdcf622'
+down_revision: Union[str, None] = 'ec7329f4a25d'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

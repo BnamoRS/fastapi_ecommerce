@@ -1,8 +1,7 @@
-from sqlalchemy import Boolean, Column,Integer, Float, ForeignKey, String
+from sqlalchemy import Boolean, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.backend.db import Base
-# from app.models import Category
 
 
 class Product(Base):

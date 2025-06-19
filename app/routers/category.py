@@ -1,16 +1,16 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from slugify import slugify
+from sqlalchemy import insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
-from typing import Annotated
-from sqlalchemy import insert, select, update
-from slugify import slugify
 
 from app.backend.db_depends import get_db
-from app.schemas import CreateCategory
 from app.models.category import Category
-from app.routers.auth import get_current_user
 from app.models.products import Product
-
+from app.routers.auth import get_current_user
+from app.schemas import CreateCategory
 
 router = APIRouter(prefix='/categories', tags=['category'])
 
@@ -22,7 +22,7 @@ async def get_all_categories(db: Annotated[AsyncSession, Depends(get_db)]):
     print(type(categories))
     return categories.all()
 
-# эта хрень не заработала
+
 @router.post('/')
 async def create_category(
         db: Annotated[AsyncSession, Depends(get_db)],

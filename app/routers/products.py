@@ -1,16 +1,16 @@
-from slugify import slugify
-from fastapi import APIRouter, Depends, status, HTTPException
-from sqlalchemy import insert, select, update
-from sqlalchemy.ext.asyncio import AsyncSession
 # from sqlalchemy.orm import Session
 from typing import Annotated
 
-from app.schemas import CreateProduct
-from app.backend.db_depends import get_db
-from app.models.products import Product
-from app.models.category import Category
-from app.routers.auth import get_current_user
+from fastapi import APIRouter, Depends, HTTPException, status
+from slugify import slugify
+from sqlalchemy import insert, select, update
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.backend.db_depends import get_db
+from app.models.category import Category
+from app.models.products import Product
+from app.routers.auth import get_current_user
+from app.schemas import CreateProduct
 
 router = APIRouter(prefix='/products', tags=['products'])
 

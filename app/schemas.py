@@ -24,7 +24,6 @@ class CreateUser(BaseModel):
 
 
 class CreateReview(BaseModel):
-    # user_id: int
     product_id: int
     comment: str | None = Field(max_length=512)
     grade: int = Field(gt=0, le=5, default=0)
