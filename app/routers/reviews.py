@@ -67,11 +67,6 @@ async def add_reviews(
         .group_by(Review.product_id)
         .scalar_subquery()
     )
-    # product_rating = await db.scalar(
-    #     select(func.avg(Review.grade).label('rating'), Review.product_id)
-    #     .where(Review.product_id == product_id, Review.is_active == True)
-    #     .group_by(Review.product_id)
-    # )
     await db.execute(
         update(Product)
         .where(Product.id == product_id)
@@ -106,12 +101,6 @@ async def delete_reviews(
         .where(Product.id == review.product_id)
         .values(rating=subq)
     )
-    # await db.execute(
-    #     update(Product).where(Product.id == review.product_id).values(
-    #         rating = await db.scalar(
-    #             select(func.avg(Review.grade), Review.product_id).where(
-    #                 Review.product_id == review.product_id, Review.is_active == True).group_by(Review.product_id)))
-    # )
     await db.commit()
     return {
         'status_code': status.HTTP_200_OK,
