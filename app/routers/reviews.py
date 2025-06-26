@@ -61,12 +61,21 @@ async def add_reviews(
         comment = create_review.comment,
         grade = create_review.grade,
     ))
-    product_rating = await db.scalar(
-        select(
-               func.avg(Review.grade).label('rating'), Review.product_id
-               ).where(Review.product_id == product_id, Review.is_active == True).group_by(Review.product_id))
-    await db.execute(update(Product).where(Product.id == product_id).values(rating = product_rating))
-    # print(product_rating)
+    subq = (
+        select(func.avg(Review.grade))
+        .where(Review.product_id == product_id, Review.is_active == True)
+        .group_by(Review.product_id)
+        .scalar_subquery()
+    )
+    # product_rating = await db.scalar(
+    #     select(func.avg(Review.grade).label('rating'), Review.product_id)
+    #     .where(Review.product_id == product_id, Review.is_active == True)
+    #     .group_by(Review.product_id)
+    # )
+    await db.execute(
+        update(Product)
+        .where(Product.id == product_id)
+        .values(rating = subq))
     await db.commit()
     return {
         'status_code': status.HTTP_201_CREATED,
@@ -86,12 +95,23 @@ async def delete_reviews(
     if not review:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Review not found')
     review.is_active = False
-    await db.execute(
-        update(Product).where(Product.id == review.product_id).values(
-            rating = await db.scalar(
-                select(func.avg(Review.grade), Review.product_id).where(
-                    Review.product_id == review.product_id, Review.is_active == True).group_by(Review.product_id)))
+    subq = (
+        select(func.avg(Review.grade))
+        .where(Review.product_id == review.product_id, Review.is_active == True)
+        .group_by(Review.product_id)
+        .scalar_subquery()
     )
+    await db.execute(
+        update(Product)
+        .where(Product.id == review.product_id)
+        .values(rating=subq)
+    )
+    # await db.execute(
+    #     update(Product).where(Product.id == review.product_id).values(
+    #         rating = await db.scalar(
+    #             select(func.avg(Review.grade), Review.product_id).where(
+    #                 Review.product_id == review.product_id, Review.is_active == True).group_by(Review.product_id)))
+    # )
     await db.commit()
     return {
         'status_code': status.HTTP_200_OK,
